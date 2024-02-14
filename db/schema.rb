@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_13_060039) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_14_103256) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,27 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_13_060039) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "line_item_dates", force: :cascade do |t|
+    t.bigint "quote_id", null: false
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_line_item_dates_on_date"
+    t.index ["quote_id", "date"], name: "index_line_item_dates_on_quote_id_and_date", unique: true
+    t.index ["quote_id"], name: "index_line_item_dates_on_quote_id"
+  end
+
+  create_table "line_items", force: :cascade do |t|
+    t.bigint "line_item_date_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.integer "quantity", null: false
+    t.decimal "unit_price", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["line_item_date_id"], name: "index_line_items_on_line_item_date_id"
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -42,4 +63,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_13_060039) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "line_item_dates", "quotes"
 end
