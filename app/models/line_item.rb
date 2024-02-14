@@ -5,4 +5,8 @@ class LineItem < ApplicationRecord
   validates :name, presence: true
   validates :quantity, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :unit_price, presence: true, numericality: { greater_than: 0 }
+
+  def total_price
+    quantity * unit_price
+  end
 end
